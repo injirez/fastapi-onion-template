@@ -20,10 +20,10 @@ class ConfigSettingsSource(PydanticBaseSettingsSource):
         config.read(f"{project_dir}/app.conf", "utf-8")
 
         conf_setting = {
-            "PORT_BACKEND": int(config.get("BASE", "PORT_BACKEND", fallback=8989)),
-            "PORT_FRONTEND": int(config.get("BASE", "PORT_FRONTEND", fallback=80)),
+            "PORT_BACKEND": config.getint("BASE", "PORT_BACKEND", fallback=8989),
+            "PORT_FRONTEND": config.getint("BASE", "PORT_FRONTEND", fallback=80),
             "SECRET_KEY": config.get("BASE", "SECRET_KEY", fallback=None),
-            "JWT_ACCESS_EXPIRATION_SECONDS": int(config.get("BASE", "JWT_ACCESS_EXPIRATION_SECONDS", fallback=3600)),
+            "JWT_ACCESS_EXPIRATION_SECONDS": config.getint("BASE", "JWT_ACCESS_EXPIRATION_SECONDS", fallback=3600),
         }
         return conf_setting
 
