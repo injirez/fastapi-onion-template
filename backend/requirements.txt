@@ -1,0 +1,15 @@
+# framework
+fastapi-slim==0.115.6
+
+# database
+aiosqlite==0.20.0
+alembic==1.14.0
+SQLAlchemy==2.0.36
+
+# pydantic
+pydantic==2.10.4
+pydantic-settings==2.7.1
+pydantic_core==2.27.2
+
+# server
+uvicorn==0.34.0
