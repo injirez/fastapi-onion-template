@@ -21,7 +21,6 @@ sys.path.insert(0, str(base_dir / "app"))
 
 from app.core.settings import settings  # noqa: E402
 from app.infrastructure.database.model.base import Base  # noqa: E402
-from app.infrastructure.database.model.user import User  # noqa: E402 F401
 
 
 # this is the Alembic Config object, which provides
