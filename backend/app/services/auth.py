@@ -7,7 +7,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from core.settings import settings
-from domain.models.auth import LoginResponse
+from domain.models.auth import LoginResponse, RefreshToken, TokenPair
 from repositories.user import SQLAlchemyUserRepository
 from services.encrypt_decrypt import decrypt
 
@@ -32,10 +32,23 @@ class AuthService:
 
         refresh_token = self.__create_token(
             data={"sub": user.username},
-            expires_delta=timedelta(minutes=settings.JWT_ACCESS_EXPIRATION_SECONDS),
+            expires_delta=timedelta(minutes=settings.JWT_REFRESH_EXPIRATION_SECONDS),
         )
 
         return LoginResponse(access_token=access_token, refresh_token=refresh_token, username=user.username)
+
+    async def refresh_token(self, data: RefreshToken):
+        payload = self.__verify_token(data.refresh_token)
+        user = await self.repository.get_by_username(payload.get("sub"))
+        if user is None:
+            raise self.__error()
+
+        access_token = self.__create_token(
+            data={"sub": user.username},
+            expires_delta=timedelta(minutes=settings.JWT_ACCESS_EXPIRATION_SECONDS),
+        )
+
+        return TokenPair(access_token=access_token, refresh_token=data.refresh_token)
 
     def __check_password(self, password: str, db_password: str) -> None:
         if not password == decrypt(db_password):
@@ -52,6 +65,13 @@ class AuthService:
             to_encode, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
         )
         return encoded_jwt
+
+    def __verify_token(self, token: str) -> dict:
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+            return payload
+        except jwt.PyJWTError as e:
+            raise self.__error(detail=f"Invalid token: {e}")
 
     @staticmethod
     def __error(
