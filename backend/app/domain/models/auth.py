@@ -9,5 +9,9 @@ class TokenPair(RefreshToken):
     access_token: str
 
 
-class LoginResponse(TokenPair):
+class Username(BaseModel):
     username: str
+
+
+class VerifyToken(BaseModel):
+    token: str
