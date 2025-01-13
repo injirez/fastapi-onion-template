@@ -8,6 +8,7 @@ from core.salt import SALT
 
 
 def decrypt(text: str) -> str:
+    """ Decrypts encrypted fernet string or returns same string """
     crypt = text.encode()
     key = hashlib.md5(SALT).hexdigest()
     key_64 = base64.urlsafe_b64encode(key.encode())
@@ -20,6 +21,7 @@ def decrypt(text: str) -> str:
 
 
 def encrypt(text: str) -> str:
+    """ Encrypts string using md5 hash, SALT and Fernet algo """
     key = hashlib.md5(SALT).hexdigest()
     key_64 = base64.urlsafe_b64encode(key.encode())
     cipher = Fernet(key_64).encrypt(text.encode())

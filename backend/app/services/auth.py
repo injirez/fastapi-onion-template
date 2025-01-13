@@ -16,6 +16,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
 class AuthService:
+    """
+    Main authentication service:
+
+    - authenticate_user
+    - refresh_token
+    - verify_token
+    - register
+    """
     __slots__ = ("repository",)
 
     def __init__(self, repository: SQLAlchemyUserRepository) -> None:
