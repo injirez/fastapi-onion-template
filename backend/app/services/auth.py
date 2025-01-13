@@ -25,19 +25,24 @@ class AuthService:
 
         self.__check_password(data.password, user.password)
 
-        access_token = self.__create_access_token(
+        access_token = self.__create_token(
             data={"sub": user.username},
             expires_delta=timedelta(minutes=settings.JWT_ACCESS_EXPIRATION_SECONDS),
         )
 
-        return LoginResponse(access_token=access_token, username=user.username)
+        refresh_token = self.__create_token(
+            data={"sub": user.username},
+            expires_delta=timedelta(minutes=settings.JWT_ACCESS_EXPIRATION_SECONDS),
+        )
+
+        return LoginResponse(access_token=access_token, refresh_token=refresh_token, username=user.username)
 
     def __check_password(self, password: str, db_password: str) -> None:
         if not password == decrypt(db_password):
             raise self.__error()
 
     @staticmethod
-    def __create_access_token(
+    def __create_token(
             data: dict[str, Any], expires_delta: timedelta
     ) -> str:
         to_encode = data.copy()

@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     PORT_FRONTEND: int
     SECRET_KEY: str
     JWT_ACCESS_EXPIRATION_SECONDS: int
+    JWT_REFRESH_EXPIRATION_SECONDS: int
 
     @computed_field
     @cached_property

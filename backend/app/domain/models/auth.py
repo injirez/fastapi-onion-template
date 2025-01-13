@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
 
-class LoginResponse(BaseModel):
+class TokenPair(BaseModel):
     access_token: str
-    username: str
+    refresh_token: str
 
 
-class TokenData(BaseModel):
+class LoginResponse(TokenPair):
     username: str
