@@ -5,11 +5,12 @@ import jwt
 from fastapi import status
 from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from sqlalchemy.exc import IntegrityError
 
 from core.settings import settings
-from domain.models.auth import RefreshToken, TokenPair, Username
+from domain.models.auth import RefreshToken, TokenPair, Username, Registration
 from repositories.user import SQLAlchemyUserRepository
-from services.encrypt_decrypt import decrypt
+from services.encrypt_decrypt import decrypt, encrypt
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
@@ -59,6 +60,18 @@ class AuthService:
             raise self.__error()
 
         return Username(username=user.username)
+
+    async def register(self, data: Registration) -> TokenPair:
+        data.password = encrypt(data.password)
+        try:
+            user = await self.repository.create(**data.model_dump(exclude={"repeat_password"}))
+        except IntegrityError:
+            raise self.__error(detail="Username already exist")
+        return await self.authenticate_user(
+            OAuth2PasswordRequestForm(
+                username=user.username, password=data.repeat_password
+            )
+        )
 
     def __check_password(self, password: str, db_password: str) -> None:
         if not password == decrypt(db_password):

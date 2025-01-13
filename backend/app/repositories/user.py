@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing_extensions import NoReturn
 
@@ -17,8 +17,11 @@ class SQLAlchemyUserRepository:
         )
         return result.scalars().first()
 
-    async def create(self, **kwargs) -> NoReturn:
-        return NotImplementedError
+    async def create(self, **kwargs) -> BaseUser:
+        result = await self.session.execute(
+            insert(BaseUser).values(**kwargs).returning(BaseUser)
+        )
+        return result.scalars().first()
 
     async def update(self, base_user: BaseUser, **kwargs) -> NoReturn:
         return NotImplementedError

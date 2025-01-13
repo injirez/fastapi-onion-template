@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from domain.models.auth import RefreshToken, TokenPair, Username
+from domain.models.auth import RefreshToken, TokenPair, Username, Registration
 from infrastructure.database.engine import sqlalchemy_helper
 from repositories.user import SQLAlchemyUserRepository
 from services.auth import AuthService, oauth2_scheme
@@ -25,10 +25,13 @@ async def login(
 
 @router.post("/register", response_model=TokenPair)
 async def register(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    form_data: Registration,
     session: AsyncSession = Depends(sqlalchemy_helper.session_getter),
 ):
-    raise NotImplementedError
+    auth_service = AuthService(SQLAlchemyUserRepository(session))
+    token_pair_response = await auth_service.register(form_data)
+
+    return token_pair_response
 
 
 @router.post("/refresh", response_model=TokenPair)
@@ -48,6 +51,6 @@ async def verify(
     session: AsyncSession = Depends(sqlalchemy_helper.session_getter),
 ):
     auth_service = AuthService(SQLAlchemyUserRepository(session))
-    token_pair_response = await auth_service.verify_token(token)
+    verify_response = await auth_service.verify_token(token)
 
-    return token_pair_response
+    return verify_response
