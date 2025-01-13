@@ -4,12 +4,14 @@ from typing import Any
 import jwt
 from fastapi import status
 from fastapi.exceptions import HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 from core.settings import settings
-from domain.models.auth import RefreshToken, TokenPair, VerifyToken, Username
+from domain.models.auth import RefreshToken, TokenPair, Username
 from repositories.user import SQLAlchemyUserRepository
 from services.encrypt_decrypt import decrypt
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
 class AuthService:
@@ -50,8 +52,8 @@ class AuthService:
 
         return TokenPair(access_token=access_token, refresh_token=data.refresh_token)
 
-    async def verify_token(self, data: VerifyToken) -> Username:
-        payload = self.__verify_token(data.token)
+    async def verify_token(self, token: str) -> Username:
+        payload = self.__verify_token(token)
         user = await self.repository.get_by_username(payload.get("sub"))
         if user is None:
             raise self.__error()

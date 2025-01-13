@@ -4,10 +4,10 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from domain.models.auth import RefreshToken, TokenPair, VerifyToken, Username
+from domain.models.auth import RefreshToken, TokenPair, Username
 from infrastructure.database.engine import sqlalchemy_helper
 from repositories.user import SQLAlchemyUserRepository
-from services.auth import AuthService
+from services.auth import AuthService, oauth2_scheme
 
 router = APIRouter()
 
@@ -44,10 +44,10 @@ async def refresh(
 
 @router.post("/verify", response_model=Username)
 async def verify(
-    form_data: VerifyToken,
+    token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(sqlalchemy_helper.session_getter),
 ):
     auth_service = AuthService(SQLAlchemyUserRepository(session))
-    token_pair_response = await auth_service.verify_token(form_data)
+    token_pair_response = await auth_service.verify_token(token)
 
     return token_pair_response

@@ -11,7 +11,3 @@ class TokenPair(RefreshToken):
 
 class Username(BaseModel):
     username: str
-
-
-class VerifyToken(BaseModel):
-    token: str
