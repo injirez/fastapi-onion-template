@@ -13,11 +13,13 @@ class Settings(BaseSettings):
     BASE_PATH: Path = Path(__file__).resolve().parent.parent
     CONFIG_FILE: Path = Path(__file__).resolve().parent.parent.parent.parent / "app.conf"
     URL_DATABASE: str = f"sqlite+aiosqlite:///{BASE_PATH.parent}/database.db"
+    JWT_ALGORITHM: str = "HS256"
 
     PORT_BACKEND: int
     PORT_FRONTEND: int
     SECRET_KEY: str
     JWT_ACCESS_EXPIRATION_SECONDS: int
+    JWT_REFRESH_EXPIRATION_SECONDS: int
 
     @computed_field
     @cached_property

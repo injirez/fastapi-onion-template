@@ -13,3 +13,12 @@ pydantic_core==2.27.2
 
 # server
 uvicorn==0.34.0
+
+# authentication
+PyJWT==2.10.1
+cryptography==44.0.0
+
+# other
+python-multipart==0.0.20
+greenlet==3.1.1
+orjson==3.10.14

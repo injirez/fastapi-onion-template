@@ -24,6 +24,7 @@ class ConfigSettingsSource(PydanticBaseSettingsSource):
             "PORT_FRONTEND": config.getint("BASE", "PORT_FRONTEND", fallback=80),
             "SECRET_KEY": config.get("BASE", "SECRET_KEY", fallback=None),
             "JWT_ACCESS_EXPIRATION_SECONDS": config.getint("BASE", "JWT_ACCESS_EXPIRATION_SECONDS", fallback=3600),
+            "JWT_REFRESH_EXPIRATION_SECONDS": config.getint("BASE", "JWT_REFRESH_EXPIRATION_SECONDS", fallback=7200),
         }
         return conf_setting
 
