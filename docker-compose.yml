@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command:
+      - python
+      - backend/app/main.py
+    ports:
+      - 8989:8989
+
+# Uncomment if you want to run your front service:
+#  frontend:
+#    build:
+#      context: .
+#      dockerfile: frontend/Dockerfile
+#    command:
+#     - npm
+#     - start
+#     - blabla...
+#    ports:
+#      - 3000:3000
+#    working_dir: /fastapi-onion-template/frontend/
