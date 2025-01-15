@@ -20,7 +20,7 @@ def update_ports() -> None:
 
     docker_config["services"]["backend"]["ports"] = [f"{settings.PORT_BACKEND}:{settings.PORT_BACKEND}"]
     # Uncomment if you use frontend
-    docker_config["services"]["frontend"]["ports"] = [f"{settings.PORT_FRONTEND}:{settings.PORT_FRONTEND}"]
+    # docker_config["services"]["frontend"]["ports"] = [f"{settings.PORT_FRONTEND}:{settings.PORT_FRONTEND}"]
 
     with open("./docker-compose.yml", "w") as file:
         yaml.safe_dump(docker_config, file)
